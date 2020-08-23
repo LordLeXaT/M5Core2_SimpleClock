@@ -14,7 +14,7 @@ This is a very simple clock for the M5Core2
 
 ## Menuicons 
 
-*1. WIFI Smart connect (touch on it [you see the clock stop], then press confirm on the ESP SmartConfig app on your phonme  
+*1. WIFI Smart connect (touch on it [you see the clock stop], then press confirm on the ESP SmartConfig app on your phone  
 
 *2. Time Sync (touch on it once the "DONE" shows that the WIFI is connected), also a "DONE" will come up if sync is done  
 
