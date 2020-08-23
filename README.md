@@ -4,13 +4,13 @@ This is a very simple clock for the M5Core2
 
 ## Usage 
 
-*1. Change parameters of ntpServer/gmtOffset_aec/daylightOffset_sec to your needs  
+*1. Change parameters of ntpServer/gmtOffset_sec/daylightOffset_sec to your needs  
 
 *2. Compile and push to the M5Core2  
 
 *3. M5Core2 will now show time based on the RTC time  
 
-*4. Touch the lower half of the M5Core2 to bring up the menu icons  
+*4. Touch the lower half of the M5Core2-LCD to bring up the menu icons  
 
 ## Menuicons 
 
