@@ -1,6 +1,12 @@
 #include <M5Core2.h>
 #include "WiFi.h"
 #include "time.h"
+//custom images
+#include "close_menu.c"
+#include "sync_no.c"
+#include "sync_yes.c"
+#include "wifi_off.c"
+#include "wifi_on.c"
 
 extern const unsigned char image_DigNumber_0000_0[504];
 extern const unsigned char image_DigNumber_0001_1[504];
@@ -25,12 +31,6 @@ extern const unsigned char image_DigNumber_35px_0007_7[315];
 extern const unsigned char image_DigNumber_35px_0008_8[315];
 extern const unsigned char image_DigNumber_35px_0009_9[315];
 extern const unsigned char image_DigNumber_35px_0010_10[315];
-
-extern const unsigned char image_wifi_on[5000];
-extern const unsigned char image_wifi_off[1394];
-extern const unsigned char image_sync_yes[5000];
-extern const unsigned char image_sync_no[5000];
-extern const unsigned char image_menu_close[5000];
 
 uint8_t *DigNumber[11] =
 {
@@ -67,6 +67,8 @@ TFT_eSprite menubuff = TFT_eSprite(&M5.Lcd);
 
 bool showMenu = false;
 bool isMenu = false;
+bool isWIFI = false;
+bool isSYNC = false;
 
 const char* ntpServer = "de.pool.ntp.org";
 const long  gmtOffset_sec = 3600;
@@ -74,7 +76,6 @@ const int   daylightOffset_sec = 3600;
 
 HotZone_t* smenu;
 HotZone_t* Menu[3];
-
 
 struct systemState
 {
@@ -87,12 +88,13 @@ struct systemState
 } sytState;
 
 void clockSetup()
-{  
+{
   DisClockbuff.createSprite(164, 101);
 }
 
 void menuSetup() {
   menubuff.createSprite(190, 50);
+  menubuff.pushSprite(65, 150);
 }
 
 void clockFlush()
@@ -100,7 +102,7 @@ void clockFlush()
   uint16_t posx[6] = { 4, 28, 66, 90, 127, 144 };
 
   M5.Rtc.GetTime(&sytState.Rtctime);
-  
+
   DisClockbuff.drawColorBitmap(posx[0], 26, 24, 42,
                                DigNumber[ sytState.Rtctime.Hours / 10 ],
                                0x00ff00,
@@ -161,6 +163,8 @@ void offMenu() {
   showMenu = false;
   M5.Lcd.fillRect(0, 110, 320, 130, BLACK);
   isMenu = false;
+  isWIFI = false;
+  isSYNC = false;
 }
 
 void doWiFi() {
@@ -184,8 +188,11 @@ reStart:
     }
   }
   Serial.println("WiFi Connected.");
-  M5.Lcd.setCursor(66, 166);
-  M5.Lcd.print("DONE");
+  isWIFI = true;
+  menubuff.deleteSprite();
+  menubuff.createSprite(190, 50);
+  menubuff.pushSprite(65, 150);
+  drawMenu();
 }
 
 void doSync() {
@@ -209,35 +216,29 @@ void doSync() {
     DateStruct.Year =    timeinfo2.tm_year + 1900;
     M5.Rtc.SetData(&DateStruct);
     M5.Lcd.setCursor(136, 166);
-    M5.Lcd.print("DONE");
+    isSYNC = true;
+    menubuff.deleteSprite();
+    menubuff.createSprite(190, 50);
+    menubuff.pushSprite(65, 150);
+    drawMenu();
     Serial.println("RTC now in sync with internet time");
   }
 }
 
 void drawMenu() {
-  /*
-  uint16_t posx[3] = { 0, 70, 140 };
-  menubuff.drawJpg(image_wifi_off,5000,posx[0], 0, 50, 50);
-  menubuff.drawJpg(image_sync_no,5000,posx[1], 0, 50, 50);
-  menubuff.drawJpg(image_menu_close,5000,posx[2], 0, 50, 50);
-
+  menubuff.fillScreen(BLACK);
+  if (!isWIFI) {
+    menubuff.pushImage(0, 0, 50, 50, wifi_off);
+  } else {
+    menubuff.pushImage(0, 0, 50, 50, wifi_on);
+  }
+  if (!isSYNC) {
+    menubuff.pushImage(70, 0, 50, 50, sync_no);
+  } else {
+    menubuff.pushImage(70, 0, 50, 50, sync_yes);
+  }
+  menubuff.pushImage(130, 0, 50, 50, close_menu);
   menubuff.pushSprite(65, 150);
-  */
-  M5.Lcd.setTextColor(GREEN);
-  M5.Lcd.setTextSize(2);
-  M5.Lcd.fillRect(65, 150, 50, 50, DARKGREY);
-  M5.Lcd.setCursor(66, 151);
-  M5.Lcd.print("WIFI");
-  M5.Lcd.fillRect(135, 150, 50, 50, DARKGREY);
-  M5.Lcd.setCursor(136, 151);
-  M5.Lcd.print("SYNC");
-  M5.Lcd.fillRect(205, 150, 50, 50, DARKGREY);
-  M5.Lcd.setCursor(206, 151);
-  M5.Lcd.print("MENU");
-
-  
-  
-  
   isMenu = true;
 }
 

@@ -14,8 +14,8 @@ This is a very simple clock for the M5Core2
 
 ## Menuicons 
 
-*1. WIFI Smart connect (touch on it [you see the clock stop], then press confirm on the ESP SmartConfig app on your phone  
+*1. WIFI Smart connect (touch on it [you see the clock stop], then press confirm on the ESP SmartConfig app on your phone, the icon will turn green if WIFI is done  
 
-*2. Time Sync (touch on it once the "DONE" shows that the WIFI is connected), also a "DONE" will come up if sync is done  
+*2. Time Sync (If WiFi icon is green, touch the TimeSync icon once), the icon will turn green if sync is done  
 
 *3. Close Menu (will hide the menu icons and disable the touch areas for the 3 icons)  
