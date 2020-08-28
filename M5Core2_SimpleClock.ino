@@ -8,6 +8,14 @@
 #include "wifi_off.c"
 #include "wifi_on.c"
 
+/*
+   Sets the WiFi Mod
+   SMARTMODE = WiFi always using smartconfig
+   FIXEDMODE = Wifi always using fixed WiFi credentials
+*/
+// WIFI MODE
+#define SMARTMODE
+
 extern const unsigned char image_DigNumber_0000_0[504];
 extern const unsigned char image_DigNumber_0001_1[504];
 extern const unsigned char image_DigNumber_0002_2[504];
@@ -77,6 +85,10 @@ const int   daylightOffset_sec = 3600;
 HotZone_t* smenu;
 HotZone_t* Menu[3];
 
+// WiFi credentials (only needed if FIXEDMODE for WiFi
+const char* ssid       = "YOUR SSID";
+const char* password   = "YOUR WiFi password";
+
 struct systemState
 {
   HotZone_t*smenu;
@@ -93,6 +105,8 @@ void clockSetup()
 }
 
 void menuSetup() {
+  M5.Lcd.fillRect(0, 110, 320, 130, BLACK);
+  menubuff.deleteSprite();
   menubuff.createSprite(190, 50);
   menubuff.pushSprite(65, 150);
 }
@@ -165,12 +179,18 @@ void offMenu() {
   isMenu = false;
   isWIFI = false;
   isSYNC = false;
+  menubuff.deleteSprite();
+  menubuff.createSprite(190, 50);
+  menubuff.pushSprite(65, 150);
 }
 
+#ifdef SMARTMODE
 void doWiFi() {
+reStart:
   int count = 0;
   WiFi.mode(WIFI_AP_STA);
-reStart:
+  delay(2000);
+  
   WiFi.beginSmartConfig();
   Serial.println("Smart Config in progress");
   while (!WiFi.smartConfigDone()) {
@@ -183,17 +203,41 @@ reStart:
     Serial.print(".");
     count++;
     if (count > 20) {
-      Serial.println("Connection failed");
+      Serial.println("Connection failed, restarting process");
+      WiFi.mode( WIFI_MODE_NULL );
+      delay(2000);
       goto reStart;
     }
   }
-  Serial.println("WiFi Connected.");
+  Serial.println("\r\nWiFi Connected.");
   isWIFI = true;
-  menubuff.deleteSprite();
-  menubuff.createSprite(190, 50);
-  menubuff.pushSprite(65, 150);
+  menuSetup();
   drawMenu();
 }
+#endif
+#ifdef FIXEDMODE
+void doWiFi() {
+reStart:
+  int count = 0;
+  WiFi.mode(WIFI_AP_STA);
+  WiFi.begin(ssid, password);
+  Serial.println("Connecting to WiFi..");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+    count++;
+    if (count > 20) {
+      WiFi.mode( WIFI_MODE_NULL );
+      delay(2000);
+      goto reStart;
+    }
+  }
+  Serial.println("\r\nWiFi Connected.");
+  isWIFI = true;
+  menuSetup();
+  drawMenu();
+}
+#endif
 
 void doSync() {
   if (WiFi.status() == WL_CONNECTED) {
@@ -222,6 +266,8 @@ void doSync() {
     menubuff.pushSprite(65, 150);
     drawMenu();
     Serial.println("RTC now in sync with internet time");
+    delay(2000);
+    drawMenu();
   }
 }
 
