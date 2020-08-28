@@ -6,7 +6,7 @@ This is a very simple clock for the M5Core2
 
 *1. Change parameters of ntpServer/gmtOffset_sec/daylightOffset_sec to your needs  
 
-*1. Change the WiFi mode as you wish, SMARTMODE = esp smartconfig, FIXEDMODE = static WiFi credentials  
+*2. Change the WiFi mode as you wish, SMARTMODE = esp smartconfig, FIXEDMODE = static WiFi credentials  
 
 *3. Compile and push to the M5Core2  
 
@@ -22,7 +22,7 @@ This is a very simple clock for the M5Core2
 
 *3. Close Menu (will hide the menu icons and disable the touch areas for the 3 icons)  
 
-## known problems 
+## Known problems 
 
 sometimes the WiFi is not working as expected, I tried to fix this by  
 restarting the complete WiFi but I'm not sure if this helps  
