@@ -2,6 +2,10 @@
 
 This is a very simple clock for the M5Core2
 
+## M5Core2 Library 
+
+* checked 02.03.2021 -> changed code to work with this version
+
 ## Usage 
 
 *1. Change parameters of ntpServer/gmtOffset_sec/daylightOffset_sec to your needs  
@@ -30,3 +34,10 @@ I think this is some ESP32 issue, that sometimes cannot connect to WiFi
   
 As I began with ESP chips I resetted the whole chip by using ESP.restart();  
 So this is my first attempt to fix it otherwise  
+
+
+
+015165971713
+
+
+4
