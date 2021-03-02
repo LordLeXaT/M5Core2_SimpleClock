@@ -9,12 +9,12 @@
 #include "wifi_on.c"
 
 /*
-   Sets the WiFi Mod
+   Sets the WiFi Mode
    SMARTMODE = WiFi always using smartconfig
    FIXEDMODE = Wifi always using fixed WiFi credentials
 */
 // WIFI MODE
-#define SMARTMODE
+#define FIXEDMODE
 
 extern const unsigned char image_DigNumber_0000_0[504];
 extern const unsigned char image_DigNumber_0001_1[504];
@@ -86,8 +86,8 @@ HotZone_t* smenu;
 HotZone_t* Menu[3];
 
 // WiFi credentials (only needed if FIXEDMODE for WiFi
-const char* ssid       = "YOUR SSID";
-const char* password   = "YOUR WiFi password";
+const char* ssid       = "YourSSID";
+const char* password   = "YourPass";
 
 struct systemState
 {
@@ -258,7 +258,7 @@ void doSync() {
     DateStruct.Month =   timeinfo2.tm_mon;
     DateStruct.Date =    timeinfo2.tm_mday;
     DateStruct.Year =    timeinfo2.tm_year + 1900;
-    M5.Rtc.SetData(&DateStruct);
+    M5.Rtc.SetDate(&DateStruct);
     M5.Lcd.setCursor(136, 166);
     isSYNC = true;
     menubuff.deleteSprite();
@@ -267,6 +267,7 @@ void doSync() {
     drawMenu();
     Serial.println("RTC now in sync with internet time");
     delay(2000);
+    WiFi.mode( WIFI_MODE_NULL );
     drawMenu();
   }
 }
